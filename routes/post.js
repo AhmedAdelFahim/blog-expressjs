@@ -3,7 +3,7 @@ const Post = require('../models/post');
 const router = express.Router();
 
 router.get('/',(req,res) => {
-    Post.find({},(error,posts)=>{
+    Post.find({}).populate({path:'author',model:'User',select:['firstName','lastName']}).exec((error,posts)=>{
         if(error) return res.json({error:error.toString()})
         res.json(posts)
     })
@@ -17,9 +17,9 @@ router.get('/:id',(req,res) => {
     })
 })
 router.post('/',(req,res) => {
-    const { body: {title,content}} = req;
+    const { body: {title,content,author}} = req;
 
-    Post.create({title, content},(error,post)=>{
+    Post.create({title, content,author},(error,post)=>{
         if(error) return res.json({error:error.toString()})
         res.json(post)
     })
